@@ -76,14 +76,14 @@ def goster_label_images(images, label):
         plt.axis('off')
         i += 1
         plt.imshow(image)
-    plt.show()
+    #plt.show()
 
 """
 Ancak, görüntüler kare kare olsa da, hepsi aynı boyutta değiller. Farklı boy oranları var.
 Basit sinir ağımız sabit boyutlu bir girdi alır, bu yüzden biraz ön işlem yapmalıyız.
 Yakında anlayacağız, ancak önce bir etiket seçip daha fazla görsel görelim. 32 numaralı etiketi seçelim:
 """
-goster_label_images(images, 40)
+# goster_label_images(images, 40)
 # images bir daha boyutlandırmadan önce boyutlarımıza bakalım.
 for image in images[:5]:
     print("shape: {0}, min: {1}, max: {2}".format(image.shape, image.min(), image.max()))
@@ -141,12 +141,15 @@ with graph.as_default():
     # And, finally, an initialization op to execute before training.
     # TODO: rename to tf.global_variables_initializer() on TF 0.12.
     init = tf.initialize_all_variables() #Tensorflow içerisinde yukarıdaki değişkenlerin kullanılabilmesi için “initialize” edilmesi gerekmektedir. 
+    saver = tf.train.Saver()
+	
 """
 print("[None,3072] images_flat: ", images_flat)
 print("logits: ", logits1)
 print("loss: ", loss)
 print("predicted_labels: ", predicted_labels)
 """
+
 # TRAINING
 # Yukarda oluşturdugumuz grapph ı çalıştırmak için session başlatıyoruz.Belirlediğimiz işlemler session ile başlayacak.
 session = tf.Session(graph=graph) #Graflar bildiğimiz gibi işlemleri tanımlamak için kullanılıyordu ama bu işlemler sadece bir Session(oturum) içerisinde run edilir. 
@@ -155,7 +158,7 @@ session = tf.Session(graph=graph) #Graflar bildiğimiz gibi işlemleri tanımlam
 # We don't care about the return value, though. It's None.
 _ = session.run([init]) # başlangıç değerini göz önünde bulundurmamak için böyle bir işlem yapıyoruz.
 
-for i in range(2000):
+for i in range(50):
     _, loss_value = session.run([train, loss], 
                                 feed_dict={images_ph: images_a, labels_ph: labels_a})
     if i % 100 == 0:
@@ -163,8 +166,15 @@ for i in range(2000):
         
         
 # SESSION Save& Restore 
-saver = tf.train.Saver()
-saver.save(session, 'trafik-isaretleri-modeli')
+
+#"	session.run(tf.global_variables_initializer())
+
+
+
+
+
+
+#print sess.run(w4,feed_dict)
 
 
 
@@ -183,4 +193,19 @@ predicted = session.run([predicted_labels],
 match_count = sum([int(y == y_) for y, y_ in zip(test_labels, predicted)])
 accuracy = match_count / len(test_labels) #oranı hesapladık.
 print("Accuracy: {:.3f}".format(accuracy))
+
+
+saver.save(session, './trafik-isaretleri-modeli')
+print("Basari ile kaydedildi")
+#save_v2
+#with tf.Session() as session:
+#  session.run(init_op)
+  # Do some work with the model.
+#  predicted = session.run([predicted_labels], 
+#                        feed_dict={images_ph: test_images32})[0]
+# Save the variables to disk.
+#  save_path = saver.save(sess, "/tmp/model.ckpt")
+#  print("Model saved in path: %s" % save_path)
+
+
 session.close()
