@@ -160,6 +160,16 @@ for i in range(2000):
                                 feed_dict={images_ph: images_a, labels_ph: labels_a})
     if i % 100 == 0:
         print("Loss: ", loss_value)
+        
+        
+# SESSION Save& Restore 
+saver = tf.train.Saver()
+saver.save(session, 'trafik-isaretleri-modeli')
+
+
+
+
+
 # test datalarımızı yükledik.
 test_images, test_labels = data_yükle(test_veri)
 # eğitim datalarını 32x32 değiştirdiğimizden dolayı test datamızıda değiştirdik.
