@@ -120,9 +120,9 @@ with graph.as_default():
     images_flat = tf.contrib.layers.flatten(images_ph)
 
     # Fully connected layer. fully_connected creates a variable called weights, representing a fully connected weight matrix, which is multiplied by the inputs to produce a Tensor of hidden units. 
-    # Generates logits of size [None, 62]
+    # Generates logits of size [None, 63]
     #operasyon sonucunu temsil eden bir değişken dondurur.
-    logits1 = tf.contrib.layers.fully_connected(images_flat, 62, tf.nn.relu)
+    logits1 = tf.contrib.layers.fully_connected(images_flat, 63, tf.nn.relu)
     #fully_connected,bağlı birimlerin bir Tensor'u üretmek için girdilerle çarpılan,tamamen bir weight matrisi temsil eden,wieghts bir degişkeni oluşturur.
 
     # Logits değerlerini label index sine int değer dönderir.
@@ -158,28 +158,14 @@ session = tf.Session(graph=graph) #Graflar bildiğimiz gibi işlemleri tanımlam
 # We don't care about the return value, though. It's None.
 _ = session.run([init]) # başlangıç değerini göz önünde bulundurmamak için böyle bir işlem yapıyoruz.
 
-for i in range(50):
+for i in range(1500):
     _, loss_value = session.run([train, loss], 
                                 feed_dict={images_ph: images_a, labels_ph: labels_a})
     if i % 100 == 0:
         print("Loss: ", loss_value)
         
-        
-# SESSION Save& Restore 
 
-#"	session.run(tf.global_variables_initializer())
-
-
-
-
-
-
-#print sess.run(w4,feed_dict)
-
-
-
-
-
+#TESTING
 # test datalarımızı yükledik.
 test_images, test_labels = data_yükle(test_veri)
 # eğitim datalarını 32x32 değiştirdiğimizden dolayı test datamızıda değiştirdik.
@@ -189,6 +175,8 @@ test_images32 = [skimage.transform.resize(image, (32, 32))
 images_ve_labels_goster(test_images32, test_labels) #test datalarımızı gösterdik
 predicted = session.run([predicted_labels], 
                         feed_dict={images_ph: test_images32})[0]
+print(predicted)
+
 # kaç tane eşleşme oldugunu saydık ve topladık.
 match_count = sum([int(y == y_) for y, y_ in zip(test_labels, predicted)])
 accuracy = match_count / len(test_labels) #oranı hesapladık.
